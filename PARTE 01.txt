@@ -1,0 +1,83 @@
+Projeto Banco de Dados - Individual:
+
+Uma companhia discográfica decidiu criar uma base de dados com informação sobre os seus músicos bem como outra informação da companhia. A informação dada ao desenhador foi a seguinte:
+
+Cada músico tem um nro. de BI, um nome, uma morada e um número de telefone. Os músicos em início de carreira muitas vezes partilham um endereço e além disso assume-se que cada endereço só tem um telefone.
+CREATE TABLE musico (
+	id_musico SERIAL PRIMARY KEY,
+	numero_BI SMALLINT,
+	nome VARCHAR(255),
+	id_endereco INTEGER NOT NULL REFERENCES endereco (id_endereco) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE endereco (
+	id_endereco SERIAL PRIMARY KEY,
+	rua VARCHAR(255),
+	numero INTEGER,
+	telefone VARCHAR(15) UNIQUE
+);
+
+Cada instrumento usado nos estúdios tem um nome (ex. guitarra, bateria, etc.) e um código interno.
+
+CREATE TABLE instrumento (
+	id_instrumento SERIAL PRIMARY KEY,
+	nome VARCHAR(255),
+	codigo INTEGER
+);
+
+Cada disco gravado na companhia tem um título, uma data, um formato (ex. CD, MC, K7), e um identificador do disco.
+
+CREATE TABLE disco (
+	id_disco SERIAL PRIMARY KEY,
+	titulo VARCHAR(255),
+	data_disco DATE,
+	formato CHAR(3),
+	identificador INTEGER,
+	produtor INTEGER NOT NULL REFERENCES musico (id_musico) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+--Cada música gravada na companhia tem um título e um autor.
+
+CREATE TABLE musica (
+	id_musica SERIAL PRIMARY KEY,
+	titulo VARCHAR(255),
+	autor VARCHAR(255),
+	id_disco INTEGER NOT NULL REFERENCES disco (id_disco) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+--Cada músico pode tocar vários instrumentos, e cada instrumento pode ser tocado por vários músicos.
+CREATE TABLE musico_instrumento (
+	id_instrumento INTEGER NOT NULL REFERENCES instrumento (id_instrumento) ON DELETE CASCADE ON UPDATE CASCADE,
+    id_musico INTEGER NOT NULL REFERENCES musico (id_musico) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id_instrumento, id_musico)
+);
+
+--Cada disco tem um certo número de músicas, mas cada música só pode aparecer num disco.
+
+
+--Cada música pode ter a participação de vários músicos, e cada músico pode participar em várias músicas.
+
+CREATE TABLE musico_participa_musica (
+	id_musica INTEGER NOT NULL REFERENCES musica (id_musica) ON DELETE CASCADE ON UPDATE CASCADE,
+	id_musico INTEGER NOT NULL REFERENCES musico (id_musico) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id_musica, id_musico)
+);
+SELECT * FROM musico
+--Cada disco tem um músico que é o seu produtor. Os músicos podem produzir vários discos.
+ 
+Façam o script e respondam:
+1) Quantos clientes estão cadastrados?
+2) Quantos clientes estão cadastrados em cada plano?  
+3) Quais os artistas que estão no sistema?     
+4) Quais são os planos, valores e limites de downloads?   
+5) Quantos artistas tem cada gravadora?
+6) Qual gravadora tem mais artistas?
+7) Quais são as músicas da “Adele”? 
+8) Quais são as músicas da gravadora Universal Music?    
+9) Quantas músicas cada gênero possui?
+10) Quantas músicas cada cliente baixou?
+11) Qual o gênero mais baixado pelos clientes do Básico?
+12) Quais são os artistas e respectivas gravadoras com mais músicas baixadas no Basico?
+13) Quanto vou receber desses clientes que estão cadastrados em cada plano? Nome plano, quantidade de clientes, valor.
+14) Qual o faturamento da minha empresa?
+15) Quantidade de músicas por gravadora  

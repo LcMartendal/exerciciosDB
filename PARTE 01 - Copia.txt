@@ -1,0 +1,247 @@
+CREATE TABLE endereco (
+    id SERIAL PRIMARY KEY,
+    rua VARCHAR(100),
+    numero VARCHAR(10),
+    cidade VARCHAR(50),
+    telefone VARCHAR(20)
+);
+
+CREATE TABLE musico (
+    bi VARCHAR(20) PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    endereco_id INT REFERENCES endereco(id)
+);
+
+CREATE TABLE instrumento (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    codigo_interno VARCHAR(20) UNIQUE
+);
+
+CREATE TABLE musico_instrumento (
+    musico_bi VARCHAR(20) REFERENCES musico(bi),
+    instrumento_id INT REFERENCES instrumento(id),
+    PRIMARY KEY (musico_bi, instrumento_id)
+);
+
+CREATE TABLE disco (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL,
+    data DATE,
+    formato VARCHAR(10),
+    produtor_bi VARCHAR(20) REFERENCES musico(bi)
+);
+
+CREATE TABLE gravadora (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100)
+);
+
+CREATE TABLE genero (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50)
+);
+
+CREATE TABLE musica (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL,
+    autor VARCHAR(100) NOT NULL,
+    disco_id INT REFERENCES disco(id),
+    genero_id INT REFERENCES genero(id),
+    gravadora_id INT REFERENCES gravadora(id),
+    artista_bi VARCHAR(20) REFERENCES musico(bi)
+);
+
+CREATE TABLE plano (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(30),
+    valor DECIMAL(10,2),
+    limite_downloads INT
+);
+
+CREATE TABLE cadastro (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    email VARCHAR(100),
+    plano_id INT REFERENCES plano(id)
+);
+
+CREATE TABLE download (
+    id SERIAL PRIMARY KEY,
+    cadastro_id INT REFERENCES cadastro(id),
+    musica_id INT REFERENCES musica(id),
+    data TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO endereco (rua, numero, cidade, telefone) VALUES
+('Rua A', '10', 'Blumenau', '1111-1111'),
+('Rua B', '20', 'Blumenau', '2222-2222'),
+('Rua C', '30', 'São Paulo', '3333-3333'),
+('Rua D', '40', 'Rio de Janeiro', '4444-4444');
+
+INSERT INTO musico (bi, nome, endereco_id) VALUES
+('100', 'Adele', 1),
+('200', 'John Mayer', 2),
+('300', 'Bruno Mars', 3),
+('400', 'Taylor Swift', 4),
+('500', 'Ed Sheeran', 2),
+('600', 'Coldplay', 3);
+
+INSERT INTO instrumento (nome, codigo_interno) VALUES
+('Guitarra', 'INST001'),
+('Piano', 'INST002'),
+('Bateria', 'INST003'),
+('Baixo', 'INST004'),
+('Violão', 'INST005');
+
+INSERT INTO musico_instrumento VALUES
+('200', 1),
+('200', 5),
+('300', 2),
+('400', 2),
+('500', 5),
+('600', 1),
+('600', 3);
+
+INSERT INTO gravadora (nome) VALUES
+('Sony Music'),
+('Universal Music'),
+('Warner Music'),
+('Atlantic Records');
+
+INSERT INTO genero (nome) VALUES
+('Pop'),
+('Rock'),
+('Soul'),
+('R&B'),
+('Acústico');
+
+INSERT INTO disco (titulo, data, formato, produtor_bi) VALUES
+('21', '2011-01-01', 'CD', '100'),
+('Continuum', '2006-10-03', 'CD', '200'),
+('Doo-Wops & Hooligans', '2010-10-04', 'CD', '300'),
+('1989', '2014-10-27', 'CD', '400'),
+('Divide', '2017-03-03', 'CD', '500'),
+('Ghost Stories', '2014-05-16', 'CD', '600');
+
+INSERT INTO musica (titulo, autor, disco_id, genero_id, gravadora_id, artista_bi) VALUES
+('Rolling in the Deep', 'Adele', 1, 1, 2, '100'),
+('Someone Like You', 'Adele', 1, 1, 2, '100'),
+('Gravity', 'John Mayer', 2, 2, 1, '200'),
+('Slow Dancing in a Burning Room', 'John Mayer', 2, 2, 1, '200'),
+('Just the Way You Are', 'Bruno Mars', 3, 4, 2, '300'),
+('Grenade', 'Bruno Mars', 3, 4, 2, '300'),
+('Blank Space', 'Taylor Swift', 4, 1, 3, '400'),
+('Shake It Off', 'Taylor Swift', 4, 1, 3, '400'),
+('Shape of You', 'Ed Sheeran', 5, 1, 1, '500'),
+('Perfect', 'Ed Sheeran', 5, 5, 1, '500'),
+('A Sky Full of Stars', 'Coldplay', 6, 2, 4, '600'),
+('Magic', 'Coldplay', 6, 2, 4, '600');
+
+INSERT INTO plano (nome, valor, limite_downloads) VALUES
+('Básico', 19.90, 30),
+('Premium', 39.90, 999);
+
+INSERT INTO cadastro (nome, email, plano_id) VALUES
+('Carlos', 'carlos@mail.com', 1),
+('Ana', 'ana@mail.com', 1),
+('Marcos', 'marcos@mail.com', 2),
+('Fernanda', 'fernanda@mail.com', 2);
+
+INSERT INTO download (cadastro_id, musica_id) VALUES
+(1, 1), (1, 2), (1, 3), (1, 9),
+(2, 1), (2, 5), (2, 7),
+(3, 9), (3, 10), (3, 11),
+(4, 2), (4, 4), (4, 12), (4, 7);
+
+--1
+SELECT COUNT(*) FROM cadastro;
+
+--2
+SELECT p.nome, COUNT(c.id) AS total
+FROM plano p
+LEFT JOIN cadastro c ON c.plano_id = p.id
+GROUP BY p.nome;
+
+--3
+SELECT nome FROM musico ORDER BY nome;
+
+--4
+SELECT nome, valor, limite_downloads FROM plano;
+
+--5
+SELECT g.nome, COUNT(m.id)
+FROM gravadora g
+LEFT JOIN musica m ON m.gravadora_id = g.id
+GROUP BY g.nome;
+
+--6
+SELECT g.nome, COUNT(m.id) AS total
+FROM gravadora g
+LEFT JOIN musica m ON m.gravadora_id = g.id
+GROUP BY g.nome
+ORDER BY total DESC
+LIMIT 1;
+
+--7
+SELECT titulo
+FROM musica
+WHERE artista_bi = (SELECT bi FROM musico WHERE nome = 'Adele');
+
+--8
+SELECT m.titulo
+FROM musica m
+JOIN gravadora g ON g.id = m.gravadora_id
+WHERE g.nome = 'Universal Music';
+
+--9
+SELECT g.nome, COUNT(m.id)
+FROM genero g
+LEFT JOIN musica m ON m.genero_id = g.id
+GROUP BY g.nome;
+
+--10
+SELECT c.nome, COUNT(d.id)
+FROM cadastro c
+LEFT JOIN download d ON d.cadastro_id = c.id
+GROUP BY c.nome;
+
+--11
+SELECT g.nome, COUNT(*) AS total
+FROM download d
+JOIN cadastro c ON c.id = d.cadastro_id
+JOIN musica m ON m.id = d.musica_id
+JOIN genero g ON g.id = m.genero_id
+WHERE c.plano_id = (SELECT id FROM plano WHERE nome = 'Básico')
+GROUP BY g.nome
+ORDER BY total DESC
+LIMIT 1;
+
+--12
+SELECT mu.nome AS artista, g.nome AS gravadora, COUNT(*) AS total_downloads
+FROM download d
+JOIN cadastro c ON c.id = d.cadastro_id
+JOIN musica m ON m.id = d.musica_id
+JOIN musico mu ON mu.bi = m.artista_bi
+JOIN gravadora g ON g.id = m.gravadora_id
+WHERE c.plano_id = (SELECT id FROM plano WHERE nome = 'Básico')
+GROUP BY mu.nome, g.nome
+ORDER BY total_downloads DESC;
+
+--13
+SELECT p.nome, COUNT(c.id) AS qtd_clientes, p.valor,
+       (COUNT(c.id) * p.valor) AS faturamento
+FROM plano p
+LEFT JOIN cadastro c ON c.plano_id = p.id
+GROUP BY p.nome, p.valor;
+
+--14
+SELECT SUM(p.valor)
+FROM cadastro c
+JOIN plano p ON p.id = c.plano_id;
+
+--15
+SELECT g.nome, COUNT(m.id)
+FROM gravadora g
+LEFT JOIN musica m ON m.gravadora_id = g.id
+GROUP BY g.nome;

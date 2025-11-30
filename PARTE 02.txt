@@ -1,0 +1,104 @@
+INSERT INTO endereco (rua, numero, telefone) VALUES
+('Rua das Flores', 123, '912345678'),
+('Avenida Central', 456, '913334455'),
+('Travessa do Sol', 78, '914445566'),
+('Rua da Alegria', 34, '915556677'),
+('Praça Nova', 89, '916667788');
+
+INSERT INTO musico (numero_BI, nome, id_endereco) VALUES
+(1001, 'João Silva', 1),
+(1002, 'Maria Santos', 2),
+(1003, 'Carlos Pereira', 1),
+(1004, 'Ana Costa', 3),
+(1005, 'Paulo Oliveira', 4),
+(1006, 'Beatriz Almeida', 5),
+(1007, 'Rui Fernandes', 2),
+(1008, 'Carla Gomes', 3),
+(1009, 'Pedro Rocha', 4),
+(1010, 'Sofia Martins', 5),
+(1011, 'Ricardo Lopes', 1),
+(1012, 'Marta Sousa', 2),
+(1013, 'Luis Nunes', 3),
+(1014, 'Isabel Castro', 4),
+(1015, 'Miguel Ribeiro', 5);
+
+INSERT INTO instrumento (nome, codigo) VALUES
+('Guitarra', 101),
+('Bateria', 102),
+('Baixo', 103),
+('Teclado', 104),
+('Violino', 105),
+('Saxofone', 106),
+('Flauta', 107),
+('Trompete', 108),
+('Cajón', 109),
+('Contrabaixo', 110);
+
+INSERT INTO disco (titulo, data_disco, formato, identificador, produtor) VALUES
+('Primeiro Som', '2023-01-15', 'CD', 1, 1),
+('Notas da Vida', '2023-03-10', 'CD', 2, 2),
+('Ritmo Total', '2023-05-20', 'MC', 3, 3),
+('Melodia Viva', '2023-06-15', 'CD', 4, 4),
+('Som & Luz', '2023-07-01', 'CD', 5, 5),
+('Harmonia', '2023-07-20', 'MC', 6, 6),
+('Vibe Urbana', '2023-08-05', 'CD', 7, 7),
+('Acústico', '2023-08-25', 'K7', 8, 8),
+('Ritmos do Mundo', '2023-09-10', 'CD', 9, 9),
+('Som da Alma', '2023-09-30', 'MC', 10, 10),
+('Notas de Ouro', '2023-10-15', 'CD', 11, 11),
+('Jazz e Blues', '2023-11-01', 'CD', 12, 12),
+('Rock Clássico', '2023-11-20', 'MC', 13, 13),
+('Música Popular', '2023-12-05', 'CD', 14, 14),
+('Ecos da Cidade', '2023-12-20', 'CD', 15, 15);
+
+INSERT INTO musica (titulo, autor, id_disco) VALUES
+('Canção do Amanhã', 'João Silva', 1),
+('Noite Estrelada', 'Maria Santos', 2),
+('Vida e Ritmo', 'Carlos Pereira', 3),
+('Melodia do Sol', 'Ana Costa', 4),
+('Balanço Total', 'Paulo Oliveira', 5),
+('Harmonia Perfeita', 'Beatriz Almeida', 6),
+('Cidade Viva', 'Rui Fernandes', 7),
+('Som da Natureza', 'Carla Gomes', 8),
+('Jazz do Mundo', 'Pedro Rocha', 9),
+('Alma Livre', 'Sofia Martins', 10),
+('Notas de Ouro', 'Ricardo Lopes', 11),
+('Blue Nights', 'Marta Sousa', 12),
+('Rock Infinito', 'Luis Nunes', 13),
+('Popular Beat', 'Isabel Castro', 14),
+('Ecos Urbanos', 'Miguel Ribeiro', 15);
+
+INSERT INTO musico_instrumento (id_musico, id_instrumento) VALUES
+(1,1),(1,3),
+(2,2),(2,4),
+(3,5),(3,6),
+(4,1),(4,2),
+(5,3),(5,7),
+(6,4),(6,8),
+(7,1),(7,9),
+(8,2),(8,10),
+(9,5),(9,3),
+(10,6),(10,4),
+(11,1),(11,2),
+(12,3),(12,4),
+(13,5),(13,6),
+(14,7),(14,8),
+(15,9),(15,10);
+
+INSERT INTO musico_participa_musica (id_musico, id_musica) VALUES
+(1,1),(2,1),
+(2,2),(3,2),
+(3,3),(4,3),
+(4,4),(5,4),
+(5,5),(6,5),
+(6,6),(7,6),
+(7,7),(8,7),
+(8,8),(9,8),
+(9,9),(10,9),
+(10,10),(11,10),
+(11,11),(12,11),
+(12,12),(13,12),
+(13,13),(14,13),
+(14,14),(15,14),
+(15,15),(1,15);
+

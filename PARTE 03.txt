@@ -1,0 +1,66 @@
+CREATE TABLE nivel_planos (
+	id_nivel_plano SERIAL PRIMARY KEY,
+	descricao VARCHAR(255),
+	valor MONEY,
+	limite_downloads SMALLINT
+);
+drop table cadastro
+CREATE TABLE plano (
+	id_plano SERIAL PRIMARY KEY,
+	id_nivel_planos INTEGER NOT NULL REFERENCES nivel_planos (id_nivel_plano) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE cadastro (
+	id_cadastro SERIAL PRIMARY KEY,
+	dt_cadastro DATE DEFAULT NOW(),	
+	cliente INTEGER NOT NULL REFERENCES cliente (id_cliente) ON DELETE CASCADE ON UPDATE CASCADE,
+	plano INTEGER NOT NULL REFERENCES plano (id_plano) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE gravadora ( --esta em musicas e musicos
+	id_gravadora SERIAL PRIMARY KEY,
+	nome VARCHAR(255)
+);
+--FAZER QTD DOWNLOADS COM SERIAL quando chega o limite para
+CREATE TABLE cliente (
+    id_cliente SERIAL PRIMARY KEY,
+    nome_cliente VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    telefone CHAR(15),
+    endereco VARCHAR(255),
+    idade SMALLINT CHECK (idade >= 0),
+    id_plano INTEGER NOT NULL REFERENCES plano(id_plano) ON DELETE CASCADE,
+    data_cadastro DATE DEFAULT CURRENT_DATE,
+    ativo BOOLEAN DEFAULT TRUE,
+	downloads_feitos SMALLINT DEFAULT 0
+);
+
+
+--fazer
+CREATE TABLE musico_gravadora (
+    id_musico INTEGER NOT NULL REFERENCES musico(id_musico),
+    id_gravadora INTEGER NOT NULL REFERENCES gravadora(id_gravadora),
+    PRIMARY KEY (id_musico, id_gravadora)
+);
+--fazer
+CREATE TABLE musica_gravadora (
+    id_musica INTEGER NOT NULL REFERENCES musica(id_musica),
+    id_gravadora INTEGER NOT NULL REFERENCES gravadora(id_gravadora),
+    PRIMARY KEY (id_musica, id_gravadora)
+);
+
+CREATE TABLE genero ( --esta em musicas
+	id_genero SERIAL PRIMARY KEY,
+	descricao VARCHAR(255)
+);
+
+
+CREATE TABLE download (
+    id_download SERIAL PRIMARY KEY,
+    id_cadastro INTEGER NOT NULL REFERENCES cadastro(id_cadastro) ON DELETE CASCADE,
+    id_musica INTEGER NOT NULL REFERENCES musica(id_musica) ON DELETE CASCADE,
+    data_download DATE DEFAULT CURRENT_DATE
+);
+
+
+
